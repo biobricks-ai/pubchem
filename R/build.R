@@ -15,7 +15,6 @@ save_parquet <- function(file) {
 }
 
 
-# WRITE OUTS =================================================================
 fs::dir_ls(outdir) |> fs::file_delete()
 zips <- list.files(path = "download", pattern = "*.zip", full.names = TRUE)
 ldply(.data = zips, .fun = unzip, exdir = "data")
