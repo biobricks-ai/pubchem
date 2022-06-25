@@ -17,10 +17,10 @@ save_parquet <- function(file) {
 
 fs::dir_ls(outdir) |> fs::file_delete()
 zips <- list.files(path = "download", pattern = "*.zip", full.names = TRUE)
-ldply(.data = zips, .fun = unzip, exdir = "data")
-dirs <- list.dirs("data")
-dirs <- dirs[-1]
-files <- list.files(path = dirs, full.names = TRUE)
-file.copy(files, "data")
-unlink(dirs, recursive = TRUE)
+ldply(.data = zips, .fun = unzip, exdir = "data", junkpath = TRUE)
+
+df <- list.files(path = "data", full.names = TRUE) %>%
+  lapply(read_csv) %>%
+  bind_rows
+
 fs::dir_ls("data", regexp = "(*.gz)?$") |> walk(save_parquet)
