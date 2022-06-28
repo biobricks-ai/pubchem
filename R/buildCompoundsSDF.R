@@ -19,21 +19,26 @@ print(stop_time - start_time)
 props <- mdb_get_prop_names(mdb)
 props <- props[props != ""]
 start_time <- Sys.time()
-df <- get_props(mdb, props)
+df1 <- get_props(mdb, props)
 print("get_props")
+stop_time <- Sys.time()
 print(stop_time - start_time)
-print(length(df))
+nrow(df1)
 
 start_time <- Sys.time()
-mdb <- read_sdf("data/Compound_012500001_013000000.sdf", coord = FALSE)
+mdb2 <- read_sdf("data/Compound_012500001_013000000.sdf", coord = FALSE)
+stop_time <- Sys.time()
 print("read_sdf")
 print(stop_time - start_time)
+
 start_time <- Sys.time()
-df <- get_props(mdb, props) |> bind_rows
-print("get_props")
+df2 <- get_props(mdb2, props)
+df <- bind_rows(df1, df2)
+stop_time <- Sys.time()
+print("bind_rows get_props")
 print(stop_time - start_time)
 print(length(mdb))
-print(length(df))
+nrow(df)
 
 
 # tsub <- \(p,r){partial(gsub,pattern=p,replacement=r,ignore.case=T)}
