@@ -1,13 +1,4 @@
-library(purrr)
-library(fs)
 library(arrow)
-library(readr)
-library(dplyr)
-library(plyr)
-library(XML)
-library(xml2)
-library(methods)
-library(R.utils)
 library(cinf)
 
 print("Reading SDF files from /raw")
