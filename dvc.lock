@@ -1,9 +1,9 @@
 schema: '2.0'
 stages:
   download_data:
-    cmd: Rscript R/download.R
+    cmd: Rscript R/downloadCompoundsSDF.R
     deps:
-    - path: R/download.R
+    - path: R/downloadCompoundsSDF.R
       md5: 
       size: 
     outs:
@@ -11,10 +11,21 @@ stages:
       md5: 
       size: 
       nfiles: 
-  build_data:
-    cmd: Rscript R/build.R
+  unzip_data:
+    cmd: Rscript R/gunzipCompoundsSDF.R
     deps:
-    - path: R/build.R
+    - path: R/gunzipCompoundsSDF.R
+      md5: 
+      size: 
+    outs:
+    - path: raw/
+      md5: 
+      size: 
+      nfiles: 
+  build_data:
+    cmd: python R/buildCompoundsSDF.py
+    deps:
+    - path: R/buildCompoundsSDF.py
       md5: 
       size: 
     outs:
