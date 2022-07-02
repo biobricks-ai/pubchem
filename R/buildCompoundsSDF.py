@@ -12,13 +12,19 @@ def FmtMem(num):
         num /= 1024.0
     return f"{num:.1f} YiB"
 
-os.mkdir("data")
+DirExist = os.path.exists("./data")
+if DirExist:
+    print("Directory data already exist")
+else:
+    print("Creating directory data")
+    os.mkdir("data")
+
 FilesTotal = os.listdir("./raw")
 FilesTotal.sort()
 
 NumFiles = len(FilesTotal)
 print("Total files:", NumFiles)
-NumFilesPerParquet = 40
+NumFilesPerParquet = 30
 print("Number of files per parquet:", NumFilesPerParquet)
 
 for i in range(0, NumFiles//NumFilesPerParquet + 1):
@@ -32,7 +38,7 @@ for i in range(0, NumFiles//NumFilesPerParquet + 1):
     DF = PandasTools.LoadSDF(Filename, molColName=None)
     Mem = DF.memory_usage(deep=True).sum()
     Toc = time.time() - Tic
-    print(Files[0], f"{Toc:.1f} s", len(DF.index), FmtMem(Mem))
+    print(f"{Files[0]}, {Toc:.1f} s, {len(DF.index)}, {FmtMem(Mem)}")
     Files = Files[1:]
 
     for File in Files:
@@ -42,7 +48,7 @@ for i in range(0, NumFiles//NumFilesPerParquet + 1):
         DF = pd.concat([DF, DFT], ignore_index=True)
         Mem = DF.memory_usage(deep=True).sum()
         Toc = time.time() - Tic
-        print(File, f"{Toc:.1f} s", len(DF.index), FmtMem(Mem))
+        print(f"{File}, {Toc:.1f} s, {len(DF.index)}, {FmtMem(Mem)}")
 
     ParquetFile = "data/Compound_" + f"{i}" + ".parquet"
     print(ParquetFile)
