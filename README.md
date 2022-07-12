@@ -11,7 +11,7 @@ https://pubchemdocs.ncbi.nlm.nih.gov/downloads
 
 ## Usage
 ```{R}
-biobricks::install_brick("pubchem")
+biobricks::brick_install("pubchem")
 biobricks::brick_pull("pubchem")
 pubchem <- brick_load_arrow("pubchem")
 ```
