@@ -10,5 +10,5 @@ echo "Download path: $downloadpath"
 mkdir -p "$downloadpath"
 cd $downloadpath;
 ftpbase="ftp://ftp.ncbi.nlm.nih.gov/pubchem/Compound/CURRENT-Full/SDF/"
-wget -r -A sdf.gz -nH --cut-dirs=5 -nc $ftpbase
+wget -r -A sdf.gz -nH --cut-dirs=4 -nc $ftpbase
 echo "Download done."
