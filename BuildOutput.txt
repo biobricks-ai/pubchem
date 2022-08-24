@@ -1,2 +1,0 @@
-/mnt/md0/biobricks/pubchem/R/buildCompoundsSDF.py:1: DeprecationWarning: The Tix Tk extension is unmaintained, and the tkinter.tix wrapper module is deprecated in favor of tkinter.ttk
-  from tkinter.tix import FileSelectBox

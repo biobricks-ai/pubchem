@@ -1,5 +1,6 @@
 .RData
 .DS_Store
+.Rhistory
 /data
 /download
 /raw

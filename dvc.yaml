@@ -1,21 +1,24 @@
 stages:
-  download_data:
-    cmd: Rscript R/downloadCompoundsSDF.R
+  download: 
+    cmd: src/1_download.sh
     deps:
-    - R/downloadCompoundsSDF.R
+    - src/1_download.sh
     outs:
     - download/
-  unzip_data:
-    cmd: Rscript R/gunzipCompoundsSDF.R
+  unzip:
+    cmd: src/2_unzip.sh
     deps:
+    - src/2_unzip.sh
     - download/
-    - R/gunzipCompoundsSDF.R
     outs:
-    - raw/
-  build_data:
-    cmd: python R/buildCompoundsSDF.py
+    - raw/    
+    - temp/
+  build:
+    cmd: src/3_build_parquet.sh
     deps:
+    - src/3_build_parquet.sh
+    - src/sdf2parquet.py
     - raw/
-    - R/buildCompoundsSDF.py
+    - temp/
     outs:
     - data/
