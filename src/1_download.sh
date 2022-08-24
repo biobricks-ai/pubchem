@@ -5,10 +5,10 @@
 localpath=$(pwd)
 echo "Local path: $localpath"
 
-downloadpath="$localpath/download"
+downloadpath="$localpath/download/compound"
 echo "Download path: $downloadpath"
 mkdir -p "$downloadpath"
 cd $downloadpath;
-ftpbase="ftp://ftp.ebi.ac.uk/pub/databases/chembl/ChEMBL-RDF/latest/"
-wget -r -A ttl.gz -nH --cut-dirs=5 -nc $ftpbase
+ftpbase="ftp://ftp.ncbi.nlm.nih.gov/pubchem/Compound/CURRENT-Full/SDF/"
+wget -r -A sdf.gz -nH --cut-dirs=5 -nc $ftpbase
 echo "Download done."
