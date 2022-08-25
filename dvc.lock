@@ -11,3 +11,18 @@ stages:
       md5: a821de6c9e69e2994ff41c0d520b5dfc.dir
       size: 101228756829
       nfiles: 330
+  unzip_build:
+    cmd: src/2_unzip_build.sh
+    deps:
+    - path: download/
+      md5: a821de6c9e69e2994ff41c0d520b5dfc.dir
+      size: 101228756829
+      nfiles: 330
+    - path: src/2_unzip_build.sh
+      md5: 1680f33c8145f29d45f4994e7e54c2a9
+      size: 982
+    outs:
+    - path: data/
+      md5: e4872340e3733fb26162eb72961a89a2.dir
+      size: 47559950676
+      nfiles: 330
