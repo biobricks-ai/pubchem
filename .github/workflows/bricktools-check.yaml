@@ -1,5 +1,5 @@
 name: bricktools-check
-on: [push]
+on: [push, workflow_dispatch]
 jobs:
   bricktools-check:
     runs-on: ubuntu-latest
