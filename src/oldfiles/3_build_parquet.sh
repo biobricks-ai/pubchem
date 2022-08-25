@@ -24,5 +24,4 @@ cat $temppath/files.txt | xargs -P1 -n1 bash -c '
 if test -f '$datapath'$1.parquet; then
   echo "build_parquet: file '$datapath'$1.parquet already created."
 else
-  python src/sdf2parquet.py '$rawpath'$1.sdf '$datapath'$1.parquet
 fi' {}

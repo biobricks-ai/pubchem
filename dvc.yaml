@@ -5,20 +5,10 @@ stages:
     - src/1_download.sh
     outs:
     - download/
-  unzip:
-    cmd: src/2_unzip.sh
+  unzip_build:
+    cmd: src/2_unzip_build.sh
     deps:
-    - src/2_unzip.sh
+    - src/2_unzip_build.sh
     - download/
-    outs:
-    - raw/    
-    - temp/
-  build:
-    cmd: src/3_build_parquet.sh
-    deps:
-    - src/3_build_parquet.sh
-    - src/sdf2parquet.py
-    - raw/
-    - temp/
     outs:
     - data/

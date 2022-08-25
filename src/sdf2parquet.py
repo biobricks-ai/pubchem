@@ -3,8 +3,7 @@ import pandas as pd
 import sys
 import pyarrow as pyarrow
 import fastparquet as fastparquet
-import os
-import time
+
 
 InFileName = sys.argv[1]
 OutFileName = sys.argv[2]
