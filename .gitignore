@@ -2,8 +2,12 @@
 .DS_Store
 .Rhistory
 /data
-/download
 /raw
 /temp
 BuildOutput.txt
 /temp
+test.txt
+
+# dvc files
+/download
+/cache

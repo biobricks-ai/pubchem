@@ -1,14 +1,70 @@
 stages:
-  download: 
-    cmd: src/1_download.sh
-    deps:
-    - src/1_download.sh
+  
+# COMPOUND_SDF.PARQUET STAGES =================================================
+  compound_check:
+    cmd: bash src/compound/0_check_ftp.sh
     outs:
-    - download/
-  unzip_build:
-    cmd: src/2_unzip_build.sh
+      - cache/compound/sdf/check_ftp.txt
+  compound_download: 
+    cmd: src/compound/1_download_compound.sh
     deps:
-    - src/2_unzip_build.sh
-    - download/
+      - src/compound/1_download_compound.sh
+      - cache/compound/sdf/check_ftp.txt
     outs:
-    - data/
+      # persist mirrored download directories
+      - download/compound/sdf:
+          persist: true
+  compound_build_sdf:
+    cmd: Rscript src/compound/2_build_compound.R
+    deps:
+      - src/compound/2_build_compound.R
+      - download/compound/sdf/
+    outs:
+      # TODO - persist this and manage smart deletions
+      - brick/compound_sdf.parquet
+
+# BIOASSAY.PARQUET STAGES =====================================================
+#   bioassay_check:
+#     cmd: bash src/bioassay/0_check_ftp.sh
+#     outs:
+#       - cache/bioassay/csv/check_ftp.txt
+#   bioassay_download:
+#     cmd: src/bioassay/1_download_bioassay.sh
+#     deps:
+#       - src/bioassay/1_download_bioassay.sh
+#       - cache/bioassay/csv/check_ftp.txt
+#     outs:
+#       # persist mirrored download directories
+#       - download/bioassay/csv:
+#         persist: true
+#   bioassay_build:
+#     cmd: Rscript src/bioassay/2_build_bioassay.R
+#     deps:
+#       - src/bioassay/2_build_bioassay.R
+#       - download/bioassay/csv/
+#     outs:
+#       # TODO - persist this and manage smart deletions
+#       - brick/bioassay.parquet
+
+# # RDF.PARQUET STAGES ==========================================================
+#   rdf_check:
+#     cmd: bash src/rdf/0_check_ftp.sh
+#     outs:
+#       - cache/rdf/check_ftp.txt
+#   rdf_download:
+#     cmd: src/rdf/1_download_rdf.sh
+#     deps:
+#       - src/rdf/1_download_rdf.sh
+#       - cache/rdf/csv/check_ftp.txt
+#     outs:
+#       # persist mirrored download directories
+#       - download/rdf/csv:
+#         persist: true
+#   rdf_build:
+#     cmd: Rscript src/rdf/2_build_rdf.R
+#     deps:
+#     - src/rdf/2_build_rdf.R
+#     - download/rdf/csv/
+#     outs:
+#     # TODO - persist this and manage smart deletions
+#     - brick/rdf.parquet

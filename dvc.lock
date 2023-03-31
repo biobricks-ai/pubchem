@@ -26,3 +26,53 @@ stages:
       md5: e4872340e3733fb26162eb72961a89a2.dir
       size: 47559950676
       nfiles: 330
+  build_compound_sdf:
+    cmd: Rscript src/2_build.R
+    deps:
+    - path: download/
+      md5: a821de6c9e69e2994ff41c0d520b5dfc.dir
+      size: 101228756829
+      nfiles: 330
+    - path: src/2_build.R
+      md5: a896b545203292601d561218348892b9
+      size: 1595
+    outs:
+    - path: brick/compound/sdf.parquet
+      md5: d6b885325abdd3662a50bced057aeab6.dir
+      size: 172355460576
+      nfiles: 597
+  compound_check:
+    cmd: bash src/compound/0_check_ftp.sh
+    outs:
+    - path: cache/compound/sdf/check_ftp.txt
+      md5: d5df2a7af73a428725cc08bf15de4ab8
+      size: 78994
+  compound_download:
+    cmd: src/compound/1_download_compound.sh
+    deps:
+    - path: cache/compound/sdf/check_ftp.txt
+      md5: d5df2a7af73a428725cc08bf15de4ab8
+      size: 78994
+    - path: src/compound/1_download_compound.sh
+      md5: b69640135b291b9ca6e9793f6ab1cecd
+      size: 232
+    outs:
+    - path: download/compound/sdf
+      md5: 37293fe9fd97392c450de902f92f3ef9.dir
+      size: 104839850219
+      nfiles: 336
+  compound_build_sdf:
+    cmd: Rscript src/compound/2_build_compound.R
+    deps:
+    - path: download/compound/sdf/
+      md5: 37293fe9fd97392c450de902f92f3ef9.dir
+      size: 104839850219
+      nfiles: 336
+    - path: src/compound/2_build_compound.R
+      md5: 6e963ef3ca11750c4486b4f8cc9c6817
+      size: 1966
+    outs:
+    - path: brick/compound_sdf.parquet
+      md5: 68e87c986a6dbdca2dbff6b76276562f.dir
+      size: 226657997710
+      nfiles: 731

@@ -9,7 +9,10 @@ Search website
 https://pubchem.ncbi.nlm.nih.gov
 
 FTP Download
-https://pubchemdocs.ncbi.nlm.nih.gov/downloads
+https://ftp.ncbi.nlm.nih.gov/pubchem/
+
+Field Descriptions
+https://ftp.ncbi.nlm.nih.gov/pubchem/specifications/pubchem_sdtags.txt
 
 ## Usage
 ```{R}
