@@ -76,3 +76,38 @@ stages:
       md5: 68e87c986a6dbdca2dbff6b76276562f.dir
       size: 226657997710
       nfiles: 731
+  bioassay_check:
+    cmd: bash src/bioassay/0_check_ftp.sh
+    outs:
+    - path: cache/bioassay/csv/check_ftp.txt
+      md5: ca0afe7eba936b77656561d36d0c7eca
+      size: 131256
+  bioassay_download:
+    cmd: src/bioassay/1_download_bioassay.sh
+    deps:
+    - path: cache/bioassay/csv/check_ftp.txt
+      md5: ca0afe7eba936b77656561d36d0c7eca
+      size: 131256
+    - path: src/bioassay/1_download_bioassay.sh
+      md5: 2eb6d047dfa276f02b15038574b59c61
+      size: 312
+    outs:
+    - path: download/bioassay/csv
+      md5: c3f138175a2da0c2e83d6b4c01b46e02.dir
+      size: 10767615137
+      nfiles: 1577
+  bioassay_build:
+    cmd: Rscript src/bioassay/2_build_bioassay.R
+    deps:
+    - path: download/bioassay/csv/
+      md5: c3f138175a2da0c2e83d6b4c01b46e02.dir
+      size: 10767615137
+      nfiles: 1577
+    - path: src/bioassay/2_build_bioassay.R
+      md5: deeb0f5d87f680d290bf7f9fa4c44df2
+      size: 3350
+    outs:
+    - path: brick/bioassay.parquet
+      md5: 04ccc94cef7fda37f84e566c207fccef.dir
+      size: 9808430679
+      nfiles: 398

@@ -24,27 +24,27 @@ stages:
       - brick/compound_sdf.parquet
 
 # BIOASSAY.PARQUET STAGES =====================================================
-#   bioassay_check:
-#     cmd: bash src/bioassay/0_check_ftp.sh
-#     outs:
-#       - cache/bioassay/csv/check_ftp.txt
-#   bioassay_download:
-#     cmd: src/bioassay/1_download_bioassay.sh
-#     deps:
-#       - src/bioassay/1_download_bioassay.sh
-#       - cache/bioassay/csv/check_ftp.txt
-#     outs:
-#       # persist mirrored download directories
-#       - download/bioassay/csv:
-#         persist: true
-#   bioassay_build:
-#     cmd: Rscript src/bioassay/2_build_bioassay.R
-#     deps:
-#       - src/bioassay/2_build_bioassay.R
-#       - download/bioassay/csv/
-#     outs:
-#       # TODO - persist this and manage smart deletions
-#       - brick/bioassay.parquet
+  bioassay_check:
+    cmd: bash src/bioassay/0_check_ftp.sh
+    outs:
+      - cache/bioassay/csv/check_ftp.txt
+  bioassay_download:
+    cmd: src/bioassay/1_download_bioassay.sh
+    deps:
+      - src/bioassay/1_download_bioassay.sh
+      - cache/bioassay/csv/check_ftp.txt
+    outs:
+      # persist mirrored download directories
+      - download/bioassay/csv:
+          persist: true
+  bioassay_build:
+    cmd: Rscript src/bioassay/2_build_bioassay.R
+    deps:
+      - src/bioassay/2_build_bioassay.R
+      - download/bioassay/csv/
+    outs:
+      # TODO - persist this and manage smart deletions
+      - brick/bioassay.parquet
 
 # # RDF.PARQUET STAGES ==========================================================
 #   rdf_check:
