@@ -41,7 +41,7 @@ stages:
     cmd: Rscript src/bioassay/2_build_bioassay.R
     deps:
       - src/bioassay/2_build_bioassay.R
-      - download/bioassay/csv/
+      - download/pubchem/Bioassay/Concise/CSV/Data
     outs:
       # TODO - persist this and manage smart deletions
       - brick/bioassay.parquet

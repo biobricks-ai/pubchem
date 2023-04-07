@@ -1,9 +1,8 @@
 #!/usr/bin/env bash
 # mirror https://ftp.ncbi.nlm.nih.gov/pubchem/Bioassay/CSV/Data/  
 # to download directory
-wdpath=$(pwd)
-dlpath="$wdpath/download/bioassay/csv/"
-ftpurl="ftp://ftp.ncbi.nlm.nih.gov/pubchem/Bioassay/CSV/Data/"
 
-mkdir -p $dlpath
-wget -m -nH -np --cut-dirs=4 -nd --accept=*.zip $ftpurl -P $dlpath
+ftpurl="ftp.ncbi.nlm.nih.gov"
+mkdir -p download/pubchem/Bioassay/Concise/CSV/Data/
+lftp -c "open $ftpurl; cd pubchem/Bioassay/Concise/CSV/Data; \
+mirror -e --delete ./ download/pubchem/Bioassay/Concise/CSV/Data"
