@@ -44,7 +44,7 @@ stages:
       - download/pubchem/Bioassay/Concise/CSV/Data
     outs:
       # TODO - persist this and manage smart deletions
-      - brick/bioassay.parquet
+      - brick/bioassay_concise.parquet
 
 # # RDF.PARQUET STAGES ==========================================================
 #   rdf_check:

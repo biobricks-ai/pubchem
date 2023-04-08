@@ -99,15 +99,15 @@ stages:
   bioassay_build:
     cmd: Rscript src/bioassay/2_build_bioassay.R
     deps:
-    - path: download/bioassay/csv/
-      md5: c3f138175a2da0c2e83d6b4c01b46e02.dir
-      size: 10767615137
-      nfiles: 1577
+    - path: download/pubchem/Bioassay/Concise/CSV/Data
+      md5: a45864afd5e508d0a285e352bbdb8de1.dir
+      size: 6802011092
+      nfiles: 1576
     - path: src/bioassay/2_build_bioassay.R
-      md5: deeb0f5d87f680d290bf7f9fa4c44df2
-      size: 3350
+      md5: bffd1da0123376a9fb7d93a4909ca1f8
+      size: 4647
     outs:
-    - path: brick/bioassay.parquet
-      md5: 04ccc94cef7fda37f84e566c207fccef.dir
-      size: 9808430679
-      nfiles: 398
+    - path: brick/bioassay_concise.parquet
+      md5: b8e450cd731fb4ca9e4513e8f6b4642c.dir
+      size: 13119419132
+      nfiles: 199

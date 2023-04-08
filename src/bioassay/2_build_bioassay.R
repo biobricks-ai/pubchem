@@ -1,10 +1,11 @@
 # Extract every downloaded bioassay csv.gz into parquet tables. 
 # README: https://ftp.ncbi.nlm.nih.gov/pubchem/Bioassay/CSV/README 
 # parsing done with respect to README.
-pacman::p_load(future, furrr)
+pacman::p_load(future, furrr, log4r)
 future::plan(future::multicore(workers=30))
 
-if(fs::dir_exists("staging/bioassay")){ fs::dir_delete("staging/bioassay") }
+# SETUP ======================================================================================
+log <- logger("DEBUG",file_appender("log.txt"))
 stgdir <- fs::dir_create("staging/bioassay")
 
 # UNZIP ALL FILES ============================================================================
@@ -17,19 +18,16 @@ header_row_valu <- c("RESULT_TYPE","RESULT_DESCR","RESULT_UNIT","RESULT_IS_ACTIV
 
 # write 10 million rows at a time to parquet
 stage_parquet = function(csvs,aids,chunk=1e7){ 
-  bigdf <- data.frame()
-  for(i in 1:length(csvs)){
-    print(sprintf("%s out of %s nr %s",i,length(csvs),nrow(bigdf)))
+  
+  parse_parquet <- purrr::possibly(function(i){
     
-    # if there are more than 7 commas skip this file
-    n1 <- readr::read_lines(csvs[i],n_max=1)
-    if(length(strsplit(n1,",")[[1]]) > 7){ next() }
-
-    df <- data.table::fread(csvs[i])
+    toplines <- readLines(csvs[i],n=20)
+    headcols <- strsplit(toplines[1],",")[[1]]
+    isheader <- strsplit(toplines[-1],",") |> purrr::map_lgl(~ .[1] %in% header_row_valu)
+    isheader <- max(which(isheader)) + 1 
     
-    # remove header rows
-    isheader <- df$PUBCHEM_RESULT_TAG[1:10] %in% header_row_valu
-    df <- df[-which(isheader),]
+    df <- data.table::fread(csvs[i], check.names=TRUE,header=FALSE,sep=",",skip=isheader)
+    colnames(df) <- headcols
 
     # add AID and reorder cols
     natcols <- colnames(df)
@@ -37,12 +35,27 @@ stage_parquet = function(csvs,aids,chunk=1e7){
     data.table::setcolorder(df,c("aid",natcols))
     colnames(df) <- tolower(colnames(df))
 
-    # pivot longer on everything but sid,cid,smiles
-    pivcols <- colnames(df)[-1:-5]
-    pivdf <- df |> tidyr::pivot_longer(cols=all_of(pivcols),
-      names_to="property",values_to="value",
+    # pivot longer on everything but aid,result_tag,sid,cid,smiles 
+    df <- df |> tidyr::pivot_longer(
+      cols=all_of(colnames(df)[-1:-5]),
+      names_to="property", values_to="value",
       values_transform = as.character)
-        
+    
+    df |> dplyr::filter(!is.na(value))
+
+  }, otherwise = NULL)
+
+  bigdf <- data.frame()
+  for(i in 1:length(csvs)){
+
+    pivdf <- parse_parquet(i)
+    
+    # if pivdf is null, log the csvfile that failed, but continue
+    if(is.null(pivdf)){
+      warn(log,sprintf("Failed to parse %s",csvs[i]))
+      next()
+    }
+
     bigdf <- data.table::rbindlist(list(bigdf, pivdf))
     while(nrow(bigdf) > 0 && (nrow(bigdf) > chunk || i == length(csvs))){
       
@@ -53,7 +66,7 @@ stage_parquet = function(csvs,aids,chunk=1e7){
       maxaid <- sprintf("%0*d", width, max(wrtdf$aid))
       fname <- sprintf("%s-%s.parquet",minaid,maxaid)
       
-      outp <- fs::path("brick/bioassay.parquet",fname)
+      outp <- fs::path("brick/bioassay_concise.parquet",fname)
       arrow::write_parquet(wrtdf,outp)
 
       bigdf <- if(nrow(bigdf) > nrow(wrtdf)){ bigdf[-(1:nrow(wrtdf)),] }else{ data.frame() }
@@ -69,13 +82,35 @@ csvid <- as.integer(gsub(".concise.csv.gz","",fs::path_file(csvgz)))
 said <- split(csvid[order(csvid)], ceiling(seq_along(csvid)/1e4))
 scsv <- split(csvgz[order(csvid)], ceiling(seq_along(csvgz)/1e4))
 
-fs::dir_create("brick/bioassay.parquet")
+fs::dir_create("brick/bioassay_concise.parquet")
 furrr::future_walk2(scsv, said, stage_parquet, .progress=TRUE)
 
 
 # SIMPLE TEST ================================================================================
-df <- arrow::open_dataset("brick/bioassay.parquet") |> dplyr::count(aid) |> dplyr::collect()
-assertthat::assert_that(length(setdiff(csvid, df$aid)) == 0)
+df <- arrow::open_dataset("brick/bioassay_concise.parquet") |> dplyr::count(aid) |> dplyr::collect()
+csvgz <- fs::dir_ls("staging/bioassay",recurse=T,glob="*.concise.csv.gz") 
+csvid <- as.integer(gsub(".concise.csv.gz","",fs::path_file(csvgz))) 
+missing_aid <- length(setdiff(df$aid,csvid))
+if(length(missing_aid) > 0){
+  warn(log,sprintf("Missing %s AIDs",paste(missing_aid,collapse=", ")))
+}
 
 # CLEAN UP ===================================================================================
-fs::dir_delete(stgdir)
+fs::dir_delete("staging/bioassay")
+
+# TIME ESTIMATE ==============================================================================
+if(interactive()){
+  df <- fs::dir_ls("brick/bioassay_concise.parquet") |> fs::file_info()
+
+  mintime <- min(df$modification_time)
+  maxtime <- max(df$modification_time)
+  diffsec <- as.numeric(maxtime - mintime, units="hours")
+  avgdur  <- diffsec/nrow(df)
+  
+  # calculate remaining time assuming 200 files
+  eta <- avgdur * (200 - nrow(df))
+  eta <- as.difftime(eta, units="hours")
+  print(sprintf("~%s hours remaining",round(100*eta)/100))
+  print(sprintf("%s files created",nrow(df)))
+  print(sprintf("%s total hours elapsed",round(100*diffsec)/100))
+}
