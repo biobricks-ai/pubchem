@@ -46,6 +46,8 @@ stages:
       # TODO - persist this and manage smart deletions
       - brick/bioassay_concise.parquet
 
+# # SAFETY AND HAZARDS
+
 # # RDF.PARQUET STAGES ==========================================================
 #   rdf_check:
 #     cmd: bash src/rdf/0_check_ftp.sh
