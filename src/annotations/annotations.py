@@ -24,4 +24,4 @@ for path in tqdm(paths):
     padf = padf._append({'cid':pcid,'json_annotations':jdat}, ignore_index=True)
 
 table = pa.Table.from_pandas(padf)
-pq.write_table(table, 'cache/pc_compounds.parquet')
+pq.write_table(table, 'brick/cid_annotations.parquet')

@@ -1,0 +1,5 @@
+outs:
+- md5: c527dc8827f02a0064194ca2686736ac
+  size: 361947425
+  hash: md5
+  path: hazard_compounds.csv
