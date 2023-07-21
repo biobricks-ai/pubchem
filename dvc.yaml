@@ -47,7 +47,11 @@ stages:
       - brick/bioassay_concise.parquet
 
 # # SAFETY AND HAZARDS
-
+# TODO we need to add checks to this
+  annotation_build:
+    cmd: python3 src/annotations/annotations.py
+    outs:
+      - brick/cid_annotations.parquet
 # # RDF.PARQUET STAGES ==========================================================
 #   rdf_check:
 #     cmd: bash src/rdf/0_check_ftp.sh
