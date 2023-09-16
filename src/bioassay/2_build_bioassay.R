@@ -7,10 +7,11 @@ future::plan(future::multicore(workers=30))
 # SETUP ======================================================================================
 log <- logger("DEBUG",file_appender("log.txt"))
 stgdir <- fs::dir_create("staging/bioassay")
+withr::defer({ fs::dir_delete("staging/bioassay") })
 
 # UNZIP ALL FILES ============================================================================
-zipfs <- fs::dir_ls("download/pubchem/Bioassay/Concise/CSV/Data",glob="*.zip")
-csvgz <- purrr::map(zipfs, ~ unzip(.,exdir=stgdir), .progress=TRUE)
+csvgz <- fs::dir_ls("download/bioassay/csv",glob="*.zip") |>
+  purrr::map(~ unzip(.,exdir=stgdir), .progress=TRUE)
 
 # CREATE BRICK/BIOASSAY.PARQUET ==============================================================
 header <- c("PUBCHEM_RESULT_TAG","PUBCHEM_SID","PUBCHEM_CID","PUBCHEM_EXT_DATASOURCE_SMILES","PUBCHEM_ACTIVITY_OUTCOME","PUBCHEM_ACTIVITY_SCORE","PUBCHEM_ACTIVITY_URL")
@@ -95,10 +96,8 @@ if(length(missing_aid) > 0){
   warn(log,sprintf("Missing %s AIDs",paste(missing_aid,collapse=", ")))
 }
 
-# CLEAN UP ===================================================================================
-fs::dir_delete("staging/bioassay")
-
 # TIME ESTIMATE ==============================================================================
+# run the below to get an estimate of the remaining time
 if(interactive()){
   df <- fs::dir_ls("brick/bioassay_concise.parquet") |> fs::file_info()
 
