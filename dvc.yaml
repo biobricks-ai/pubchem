@@ -27,12 +27,12 @@ stages:
   bioassay_check:
     cmd: bash src/bioassay/0_check_ftp.sh
     outs:
-      - cache/bioassay/csv/check_ftp.txt
+      - cache/bioassay/concise/csv/check_ftp.txt
   bioassay_download:
     cmd: src/bioassay/1_download_bioassay.sh
     deps:
       - src/bioassay/1_download_bioassay.sh
-      - cache/bioassay/csv/check_ftp.txt
+      - cache/bioassay/concise/csv/check_ftp.txt
     outs:
       # persist mirrored download directories
       - download/bioassay/csv:
