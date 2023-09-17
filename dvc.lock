@@ -89,28 +89,33 @@ stages:
       md5: ca0afe7eba936b77656561d36d0c7eca
       size: 131256
     - path: src/bioassay/1_download_bioassay.sh
-      md5: 2eb6d047dfa276f02b15038574b59c61
-      size: 312
+      hash: md5
+      md5: 0dbd0ab833508e8446dd5110fced8fac
+      size: 429
     outs:
     - path: download/bioassay/csv
-      md5: c3f138175a2da0c2e83d6b4c01b46e02.dir
-      size: 10767615137
-      nfiles: 1577
+      hash: md5
+      md5: df79453594cba17f6055ce07e90905e1.dir
+      size: 6857576000
+      nfiles: 1649
   bioassay_build:
     cmd: Rscript src/bioassay/2_build_bioassay.R
     deps:
-    - path: download/pubchem/Bioassay/Concise/CSV/Data
-      md5: a45864afd5e508d0a285e352bbdb8de1.dir
-      size: 6802011092
-      nfiles: 1576
+    - path: download/bioassay/csv
+      hash: md5
+      md5: fc0f701d0ac4e83b852dbf096ad8da05.dir
+      size: 6857555465
+      nfiles: 1649
     - path: src/bioassay/2_build_bioassay.R
-      md5: bffd1da0123376a9fb7d93a4909ca1f8
-      size: 4647
+      hash: md5
+      md5: bf63e0edcda18e432590147aba2945c3
+      size: 4594
     outs:
     - path: brick/bioassay_concise.parquet
-      md5: b8e450cd731fb4ca9e4513e8f6b4642c.dir
-      size: 13119419132
-      nfiles: 199
+      hash: md5
+      md5: 0ec6666e46c27180b14da03c82ca3259.dir
+      size: 110194688
+      nfiles: 1
   annotation_build:
     cmd: python3 src/annotations/annotations.py
     outs:

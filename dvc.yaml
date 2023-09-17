@@ -41,17 +41,18 @@ stages:
     cmd: Rscript src/bioassay/2_build_bioassay.R
     deps:
       - src/bioassay/2_build_bioassay.R
-      - download/pubchem/Bioassay/Concise/CSV/Data
+      - download/bioassay/csv
     outs:
       # TODO - persist this and manage smart deletions
       - brick/bioassay_concise.parquet
 
 # # SAFETY AND HAZARDS
-# TODO we need to add checks to this
+# TODO there should be a better way to bulk download annotations. Tom is contacting pubchem. see https://twitter.com/pubchem/status/1686056545337917441 
   annotation_build:
     cmd: python3 src/annotations/annotations.py
     outs:
       - brick/cid_annotations.parquet
+
 # # RDF.PARQUET STAGES ==========================================================
 #   rdf_check:
 #     cmd: bash src/rdf/0_check_ftp.sh
