@@ -2,7 +2,7 @@
 # README: https://ftp.ncbi.nlm.nih.gov/pubchem/Bioassay/CSV/README 
 # parsing done with respect to README.
 pacman::p_load(future, furrr, log4r)
-future::plan(future::multicore(workers=30))
+future::plan(future::multicore(workers=10))
 
 # SETUP ======================================================================================
 log <- logger("DEBUG",file_appender("log.txt"))
@@ -10,8 +10,10 @@ stgdir <- fs::dir_create("staging/bioassay")
 withr::defer({ fs::dir_delete("staging/bioassay") })
 
 # UNZIP ALL FILES ============================================================================
-csvgz <- fs::dir_ls("download/bioassay/csv",glob="*.zip") |>
-  purrr::map(~ unzip(.,exdir=stgdir), .progress=TRUE)
+csvs <- fs::dir_ls("download/bioassay/csv",glob="*.zip") |> 
+  purrr::map(~ unzip(.,exdir=stgdir), .progress=TRUE) |> 
+  unlist()
+aids <- as.numeric(gsub(".*/([0-9]+)\\.concise\\.csv\\.gz$", "\\1", csvs))
 
 # CREATE BRICK/BIOASSAY.PARQUET ==============================================================
 header <- c("PUBCHEM_RESULT_TAG","PUBCHEM_SID","PUBCHEM_CID","PUBCHEM_EXT_DATASOURCE_SMILES","PUBCHEM_ACTIVITY_OUTCOME","PUBCHEM_ACTIVITY_SCORE","PUBCHEM_ACTIVITY_URL")
@@ -47,6 +49,14 @@ stage_parquet = function(csvs,aids,chunk=1e7){
   }, otherwise = NULL)
 
   bigdf <- data.frame()
+  data_list <- list()
+  for(i in 1:length(csvs)){
+    print(glue::glue("i is {i}"))
+    data_list[i] <- parse_parquet(i)
+  }
+
+  bigdf <- data.table::rbindlist(data_list)
+
   for(i in 1:length(csvs)){
 
     pivdf <- parse_parquet(i)
@@ -83,7 +93,9 @@ csvid <- as.integer(gsub(".concise.csv.gz","",fs::path_file(csvgz)))
 said <- split(csvid[order(csvid)], ceiling(seq_along(csvid)/1e4))
 scsv <- split(csvgz[order(csvid)], ceiling(seq_along(csvgz)/1e4))
 
-fs::dir_create("brick/bioassay_concise.parquet")
+brickdir <- fs::path("brick/bioassay_concise.parquet")
+if(fs::dir_exists(brickdir)){ fs::dir_delete(brickdir) }
+fs::dir_create(brickdir)
 furrr::future_walk2(scsv, said, stage_parquet, .progress=TRUE)
 
 
@@ -91,7 +103,7 @@ furrr::future_walk2(scsv, said, stage_parquet, .progress=TRUE)
 df <- arrow::open_dataset("brick/bioassay_concise.parquet") |> dplyr::count(aid) |> dplyr::collect()
 csvgz <- fs::dir_ls("staging/bioassay",recurse=T,glob="*.concise.csv.gz") 
 csvid <- as.integer(gsub(".concise.csv.gz","",fs::path_file(csvgz))) 
-missing_aid <- length(setdiff(df$aid,csvid))
+missing_aid <- length(setdiff(csvid,df$aid) |> unique())
 if(length(missing_aid) > 0){
   warn(log,sprintf("Missing %s AIDs",paste(missing_aid,collapse=", ")))
 }
