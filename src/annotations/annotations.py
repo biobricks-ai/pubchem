@@ -4,7 +4,7 @@ import pyarrow as pa, pyarrow.parquet as pq
 from urllib.parse import quote
 from tqdm import tqdm
 
-df = pd.read_csv('downloads/hazard_compounds.csv')
+df = pd.read_csv('manual_downloads/hazard_compounds.csv')
 cids = df['cid'].tolist()
 os.makedirs('cache/pc_compounds_json')
 for cid in tqdm(cids):

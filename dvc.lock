@@ -79,15 +79,17 @@ stages:
   bioassay_check:
     cmd: bash src/bioassay/0_check_ftp.sh
     outs:
-    - path: cache/bioassay/csv/check_ftp.txt
-      md5: ca0afe7eba936b77656561d36d0c7eca
-      size: 131256
+    - path: cache/bioassay/concise/csv/check_ftp.txt
+      hash: md5
+      md5: 47a8ec9d64cdfd77ef24395505373f0b
+      size: 148896
   bioassay_download:
     cmd: src/bioassay/1_download_bioassay.sh
     deps:
-    - path: cache/bioassay/csv/check_ftp.txt
-      md5: ca0afe7eba936b77656561d36d0c7eca
-      size: 131256
+    - path: cache/bioassay/concise/csv/check_ftp.txt
+      hash: md5
+      md5: 47a8ec9d64cdfd77ef24395505373f0b
+      size: 148896
     - path: src/bioassay/1_download_bioassay.sh
       hash: md5
       md5: 0dbd0ab833508e8446dd5110fced8fac
@@ -103,19 +105,19 @@ stages:
     deps:
     - path: download/bioassay/csv
       hash: md5
-      md5: fc0f701d0ac4e83b852dbf096ad8da05.dir
-      size: 6857555465
+      md5: df79453594cba17f6055ce07e90905e1.dir
+      size: 6857576000
       nfiles: 1649
     - path: src/bioassay/2_build_bioassay.R
       hash: md5
-      md5: bf63e0edcda18e432590147aba2945c3
-      size: 4594
+      md5: c01b7f6f12a7f8dfd3a896fffe98d250
+      size: 3483
     outs:
     - path: brick/bioassay_concise.parquet
       hash: md5
-      md5: 0ec6666e46c27180b14da03c82ca3259.dir
-      size: 110194688
-      nfiles: 1
+      md5: 8d8bcc091be5da6a3bdc598d98b6f0dd.dir
+      size: 17840490915
+      nfiles: 58
   annotation_build:
     cmd: python3 src/annotations/annotations.py
     outs:
