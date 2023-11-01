@@ -73,6 +73,7 @@ stages:
       size: 1966
     outs:
     - path: brick/compound_sdf.parquet
+      hash: md5
       md5: 68e87c986a6dbdca2dbff6b76276562f.dir
       size: 226657997710
       nfiles: 731
