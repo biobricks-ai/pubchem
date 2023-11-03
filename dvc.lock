@@ -126,3 +126,59 @@ stages:
       hash: md5
       md5: 163290b1eef59ead27a60a0aa8c1f983
       size: 2941304667
+  bioassay_extras_check:
+    cmd: bash src/bioassay_extras/0_check_ftp.sh
+    outs:
+    - path: cache/bioassay/extras/check_ftp.txt
+      hash: md5
+      md5: 4939598b5d927bf3c41c4a45c831eb58
+      size: 1592
+  bioassay_extras_download:
+    cmd: bash src/bioassay_extras/1_download.sh
+    deps:
+    - path: cache/bioassay/extras/check_ftp.txt
+      hash: md5
+      md5: 4939598b5d927bf3c41c4a45c831eb58
+      size: 1592
+    - path: src/bioassay_extras/1_download.sh
+      hash: md5
+      md5: 73032c58e2511d236eaa539997a0803a
+      size: 424
+    outs:
+    - path: download/bioassay/extras/Sid2CidSMILES.gz
+      hash: md5
+      md5: 9450bdafff7eb94294d03bc0795ba0a8
+      size: 116070609
+    - path: download/bioassay/extras/bioactivities.tsv.gz
+      hash: md5
+      md5: befa58e755e84735a4d776ae7f1565be
+      size: 2980886247
+    - path: download/bioassay/extras/bioassays.tsv.gz
+      hash: md5
+      md5: 75914d0a18ba09352402c43c9487da0d
+      size: 43616164
+  bioassay_extras_build:
+    cmd: Rscript src/bioassay_extras/2_build_bioassay_extras.R
+    deps:
+    - path: download/bioassay/extras/Sid2CidSMILES.gz
+      hash: md5
+      md5: 9450bdafff7eb94294d03bc0795ba0a8
+      size: 116070609
+    - path: download/bioassay/extras/bioactivities.tsv.gz
+      hash: md5
+      md5: befa58e755e84735a4d776ae7f1565be
+      size: 2980886247
+    - path: download/bioassay/extras/bioassays.tsv.gz
+      hash: md5
+      md5: 75914d0a18ba09352402c43c9487da0d
+      size: 43616164
+    - path: src/bioassay_extras/2_build_bioassay_extras.R
+      hash: md5
+      md5: eac7f604cb83ad27e62abb08e3b53bd9
+      size: 743
+    outs:
+    - path: brick/bioassay_extra
+      hash: md5
+      md5: 4ffd09ffd4f57bd08946f408f4919847.dir
+      size: 5621461770
+      nfiles: 32

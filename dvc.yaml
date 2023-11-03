@@ -46,6 +46,36 @@ stages:
       # TODO - persist this and manage smart deletions
       - brick/bioassay_concise.parquet
 
+  bioassay_extras_check:
+    cmd: bash src/bioassay_extras/0_check_ftp.sh
+    outs:
+      - cache/bioassay/extras/check_ftp.txt
+  
+  bioassay_extras_download:
+    cmd: bash src/bioassay_extras/1_download.sh
+    deps:
+      - src/bioassay_extras/1_download.sh
+      - cache/bioassay/extras/check_ftp.txt
+    outs:
+      # persist mirrored download directories
+      - download/bioassay/extras/bioassays.tsv.gz:
+          persist: true
+      - download/bioassay/extras/bioactivities.tsv.gz:
+          persist: true
+      - download/bioassay/extras/Sid2CidSMILES.gz:
+          persist: true
+      
+  
+  bioassay_extras_build:
+    cmd: Rscript src/bioassay_extras/2_build_bioassay_extras.R
+    deps:
+      - src/bioassay_extras/2_build_bioassay_extras.R
+      - download/bioassay/extras/bioassays.tsv.gz
+      - download/bioassay/extras/bioactivities.tsv.gz
+      - download/bioassay/extras/Sid2CidSMILES.gz
+    outs: 
+      - brick/bioassay_extra
+
 # # SAFETY AND HAZARDS
 # TODO there should be a better way to bulk download annotations. Tom is contacting pubchem. see https://twitter.com/pubchem/status/1686056545337917441 
   annotation_build:
