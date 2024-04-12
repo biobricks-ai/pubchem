@@ -1,184 +1,144 @@
+---
 schema: '2.0'
 stages:
-  download:
-    cmd: src/1_download.sh
+  annotation_build:
+    cmd: python3 src/annotations/annotations.py
+    outs:
+    - hash: md5
+      md5: 163290b1eef59ead27a60a0aa8c1f983
+      path: brick/cid_annotations.parquet
+      size: 2941304667
+  bioassay_build:
+    cmd: Rscript src/bioassay/2_build_bioassay.R
     deps:
-    - path: src/1_download.sh
-      md5: cb5db5b6a9762d60f6022926fe15c9a3
-      size: 352
+    - hash: md5
+      md5: df79453594cba17f6055ce07e90905e1.dir
+      nfiles: 1649
+      path: download/bioassay/csv
+      size: 6857576000
+    - hash: md5
+      md5: c01b7f6f12a7f8dfd3a896fffe98d250
+      path: src/bioassay/2_build_bioassay.R
+      size: 3483
     outs:
-    - path: download/
-      md5: a821de6c9e69e2994ff41c0d520b5dfc.dir
-      size: 101228756829
-      nfiles: 330
-  unzip_build:
-    cmd: src/2_unzip_build.sh
-    deps:
-    - path: download/
-      md5: a821de6c9e69e2994ff41c0d520b5dfc.dir
-      size: 101228756829
-      nfiles: 330
-    - path: src/2_unzip_build.sh
-      md5: 1680f33c8145f29d45f4994e7e54c2a9
-      size: 982
-    outs:
-    - path: data/
-      md5: e4872340e3733fb26162eb72961a89a2.dir
-      size: 47559950676
-      nfiles: 330
-  build_compound_sdf:
-    cmd: Rscript src/2_build.R
-    deps:
-    - path: download/
-      md5: a821de6c9e69e2994ff41c0d520b5dfc.dir
-      size: 101228756829
-      nfiles: 330
-    - path: src/2_build.R
-      md5: a896b545203292601d561218348892b9
-      size: 1595
-    outs:
-    - path: brick/compound/sdf.parquet
-      md5: d6b885325abdd3662a50bced057aeab6.dir
-      size: 172355460576
-      nfiles: 597
-  compound_check:
-    cmd: bash src/compound/0_check_ftp.sh
-    outs:
-    - path: cache/compound/sdf/check_ftp.txt
-      md5: d5df2a7af73a428725cc08bf15de4ab8
-      size: 78994
-  compound_download:
-    cmd: src/compound/1_download_compound.sh
-    deps:
-    - path: cache/compound/sdf/check_ftp.txt
-      md5: d5df2a7af73a428725cc08bf15de4ab8
-      size: 78994
-    - path: src/compound/1_download_compound.sh
-      md5: b69640135b291b9ca6e9793f6ab1cecd
-      size: 232
-    outs:
-    - path: download/compound/sdf
-      md5: 37293fe9fd97392c450de902f92f3ef9.dir
-      size: 104839850219
-      nfiles: 336
-  compound_build_sdf:
-    cmd: Rscript src/compound/2_build_compound.R
-    deps:
-    - path: download/compound/sdf/
-      md5: 37293fe9fd97392c450de902f92f3ef9.dir
-      size: 104839850219
-      nfiles: 336
-    - path: src/compound/2_build_compound.R
-      md5: 6e963ef3ca11750c4486b4f8cc9c6817
-      size: 1966
-    outs:
-    - path: brick/compound_sdf.parquet
-      hash: md5
-      md5: 68e87c986a6dbdca2dbff6b76276562f.dir
-      size: 226657997710
-      nfiles: 731
+    - hash: md5
+      md5: 8d8bcc091be5da6a3bdc598d98b6f0dd.dir
+      nfiles: 58
+      path: brick/bioassay_concise.parquet
+      size: 17840490915
   bioassay_check:
     cmd: bash src/bioassay/0_check_ftp.sh
     outs:
-    - path: cache/bioassay/concise/csv/check_ftp.txt
-      hash: md5
+    - hash: md5
       md5: 47a8ec9d64cdfd77ef24395505373f0b
+      path: cache/bioassay/concise/csv/check_ftp.txt
       size: 148896
   bioassay_download:
     cmd: src/bioassay/1_download_bioassay.sh
     deps:
-    - path: cache/bioassay/concise/csv/check_ftp.txt
-      hash: md5
+    - hash: md5
       md5: 47a8ec9d64cdfd77ef24395505373f0b
+      path: cache/bioassay/concise/csv/check_ftp.txt
       size: 148896
-    - path: src/bioassay/1_download_bioassay.sh
-      hash: md5
+    - hash: md5
       md5: 0dbd0ab833508e8446dd5110fced8fac
+      path: src/bioassay/1_download_bioassay.sh
       size: 429
     outs:
-    - path: download/bioassay/csv
-      hash: md5
+    - hash: md5
       md5: df79453594cba17f6055ce07e90905e1.dir
-      size: 6857576000
       nfiles: 1649
-  bioassay_build:
-    cmd: Rscript src/bioassay/2_build_bioassay.R
+      path: download/bioassay/csv
+      size: 6857576000
+  bioassay_extras_build:
+    cmd: Rscript src/bioassay_extras/2_build_bioassay_extras.R
     deps:
-    - path: download/bioassay/csv
-      hash: md5
-      md5: df79453594cba17f6055ce07e90905e1.dir
-      size: 6857576000
-      nfiles: 1649
-    - path: src/bioassay/2_build_bioassay.R
-      hash: md5
-      md5: c01b7f6f12a7f8dfd3a896fffe98d250
-      size: 3483
+    - hash: md5
+      md5: 9450bdafff7eb94294d03bc0795ba0a8
+      path: download/bioassay/extras/Sid2CidSMILES.gz
+      size: 116070609
+    - hash: md5
+      md5: befa58e755e84735a4d776ae7f1565be
+      path: download/bioassay/extras/bioactivities.tsv.gz
+      size: 2980886247
+    - hash: md5
+      md5: 75914d0a18ba09352402c43c9487da0d
+      path: download/bioassay/extras/bioassays.tsv.gz
+      size: 43616164
+    - hash: md5
+      md5: eac7f604cb83ad27e62abb08e3b53bd9
+      path: src/bioassay_extras/2_build_bioassay_extras.R
+      size: 743
     outs:
-    - path: brick/bioassay_concise.parquet
-      hash: md5
-      md5: 8d8bcc091be5da6a3bdc598d98b6f0dd.dir
-      size: 17840490915
-      nfiles: 58
-  annotation_build:
-    cmd: python3 src/annotations/annotations.py
-    outs:
-    - path: brick/cid_annotations.parquet
-      hash: md5
-      md5: 163290b1eef59ead27a60a0aa8c1f983
-      size: 2941304667
+    - hash: md5
+      md5: 4ffd09ffd4f57bd08946f408f4919847.dir
+      nfiles: 32
+      path: brick/bioassay_extra
+      size: 5621461770
   bioassay_extras_check:
     cmd: bash src/bioassay_extras/0_check_ftp.sh
     outs:
-    - path: cache/bioassay/extras/check_ftp.txt
-      hash: md5
+    - hash: md5
       md5: 4939598b5d927bf3c41c4a45c831eb58
+      path: cache/bioassay/extras/check_ftp.txt
       size: 1592
   bioassay_extras_download:
     cmd: bash src/bioassay_extras/1_download.sh
     deps:
-    - path: cache/bioassay/extras/check_ftp.txt
-      hash: md5
+    - hash: md5
       md5: 4939598b5d927bf3c41c4a45c831eb58
+      path: cache/bioassay/extras/check_ftp.txt
       size: 1592
-    - path: src/bioassay_extras/1_download.sh
-      hash: md5
+    - hash: md5
       md5: 73032c58e2511d236eaa539997a0803a
+      path: src/bioassay_extras/1_download.sh
       size: 424
     outs:
-    - path: download/bioassay/extras/Sid2CidSMILES.gz
-      hash: md5
+    - hash: md5
       md5: 9450bdafff7eb94294d03bc0795ba0a8
+      path: download/bioassay/extras/Sid2CidSMILES.gz
       size: 116070609
-    - path: download/bioassay/extras/bioactivities.tsv.gz
-      hash: md5
+    - hash: md5
       md5: befa58e755e84735a4d776ae7f1565be
+      path: download/bioassay/extras/bioactivities.tsv.gz
       size: 2980886247
-    - path: download/bioassay/extras/bioassays.tsv.gz
-      hash: md5
+    - hash: md5
       md5: 75914d0a18ba09352402c43c9487da0d
+      path: download/bioassay/extras/bioassays.tsv.gz
       size: 43616164
-  bioassay_extras_build:
-    cmd: Rscript src/bioassay_extras/2_build_bioassay_extras.R
+  compound_build_sdf:
+    cmd: Rscript src/compound/2_build_compound.R
     deps:
-    - path: download/bioassay/extras/Sid2CidSMILES.gz
-      hash: md5
-      md5: 9450bdafff7eb94294d03bc0795ba0a8
-      size: 116070609
-    - path: download/bioassay/extras/bioactivities.tsv.gz
-      hash: md5
-      md5: befa58e755e84735a4d776ae7f1565be
-      size: 2980886247
-    - path: download/bioassay/extras/bioassays.tsv.gz
-      hash: md5
-      md5: 75914d0a18ba09352402c43c9487da0d
-      size: 43616164
-    - path: src/bioassay_extras/2_build_bioassay_extras.R
-      hash: md5
-      md5: eac7f604cb83ad27e62abb08e3b53bd9
-      size: 743
+    - md5: 37293fe9fd97392c450de902f92f3ef9.dir
+      nfiles: 336
+      path: download/compound/sdf/
+      size: 104839850219
+    - md5: 6e963ef3ca11750c4486b4f8cc9c6817
+      path: src/compound/2_build_compound.R
+      size: 1966
     outs:
-    - path: brick/bioassay_extra
-      hash: md5
-      md5: 4ffd09ffd4f57bd08946f408f4919847.dir
-      size: 5621461770
-      nfiles: 32
+    - hash: md5
+      md5: 68e87c986a6dbdca2dbff6b76276562f.dir
+      nfiles: 731
+      path: brick/compound_sdf.parquet
+      size: 226657997710
+  compound_check:
+    cmd: bash src/compound/0_check_ftp.sh
+    outs:
+    - md5: d5df2a7af73a428725cc08bf15de4ab8
+      path: cache/compound/sdf/check_ftp.txt
+      size: 78994
+  compound_download:
+    cmd: src/compound/1_download_compound.sh
+    deps:
+    - md5: d5df2a7af73a428725cc08bf15de4ab8
+      path: cache/compound/sdf/check_ftp.txt
+      size: 78994
+    - md5: b69640135b291b9ca6e9793f6ab1cecd
+      path: src/compound/1_download_compound.sh
+      size: 232
+    outs:
+    - md5: 37293fe9fd97392c450de902f92f3ef9.dir
+      nfiles: 336
+      path: download/compound/sdf
+      size: 104839850219
