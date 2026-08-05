@@ -1,0 +1,58 @@
+{
+  "@context": "../../context/source.context.jsonld",
+  "@type": "dcat:Dataset",
+  "@id": "https://biobricks.ai/bricks/pubchem",
+  "dcterms:title": "PubChem (compounds, bioassays, and chemical annotations)",
+  "dcterms:description": "A BioBricks brick mirroring and re-packaging PubChem data downloaded from the NCBI PubChem FTP site (ftp.ncbi.nlm.nih.gov/pubchem): the CURRENT-Full compound SDF collection, concise BioAssay CSVs and bioassay extras (bioassays/bioactivities/Sid2CidSMILES), and chemical safety/hazard annotations pulled from PubChem PUG-View (via github.com/biobricks-ai/pubchem_annotations). PubChem is an NCBI/NLM aggregator: some content is US-Government public domain, but much is contributed or licensed by third-party depositors who may assert their own copyright and commercial-use restrictions.",
+  "dcterms:license": {
+    "@id": "https://www.ncbi.nlm.nih.gov/home/about/policies/",
+    "dcterms:title": "No single license; NCBI public-domain content mixed with depositor-copyrighted content (see NCBI policies)"
+  },
+  "dcterms:creator": "PubChem depositors (aggregated)",
+  "dcterms:publisher": "National Center for Biotechnology Information (NCBI), U.S. National Library of Medicine",
+  "dcterms:identifier": "https://pubchem.ncbi.nlm.nih.gov/",
+  "biobricks:licenseName": "No single license (NCBI public-domain content mixed with depositor-copyrighted content)",
+  "biobricks:licenseClass": "unknown",
+  "biobricks:merckCommercialUse": "unknown",
+  "biobricks:licenseEvidence": [
+    {
+      "source": "src/compound/1_download_compound.sh",
+      "quote": "ftpurl=\"ftp://ftp.ncbi.nlm.nih.gov/pubchem/Compound/CURRENT-Full/SDF/\"",
+      "confidence": "high"
+    },
+    {
+      "source": "README.md",
+      "quote": "Downloads compound data and bioasssay outcomes from pubchem FTP, chemical annotations are pulled in github.com/biobricks-ai/pubchem_annotations.",
+      "confidence": "high"
+    },
+    {
+      "source": "https://www.ncbi.nlm.nih.gov/home/about/policies/",
+      "quote": "PubChem [is among resources that] incorporate material contributed or licensed by individuals, companies, or organizations that may be protected by U.S. and foreign copyright laws. All persons reproducing, redistributing, or making commercial use of this information are expected to adhere to the terms and conditions asserted by the copyright holder. ... NCBI cannot provide comment or unrestricted permission concerning the use, copying, or distribution of the information contained in the molecular databases.",
+      "confidence": "high"
+    }
+  ],
+  "biobricks:reviewed": false,
+  "biobricks:reviewNotes": "Determined by the BioBricks licensing-provenance annotation agent (slice items[1332:1338]). PubChem has no single license: NCBI states US-Government-created content is public domain, but PubChem specifically aggregates depositor-contributed material that may be copyright-protected, and NCBI explicitly warns that anyone making commercial use must adhere to each copyright holder's terms and that NCBI cannot grant such permission. Because this brick bundles the whole FTP dump (compounds + bioassays + annotations) across many depositors, the aggregate license cannot be pinned to one class and commercial redistribution rights vary per record; classed conservatively as unknown / commercial unknown (most-restrictive-component rule). HUMAN REVIEW: PubChem's bulk compound/bioassay records are widely treated as freely usable, but depositor-restricted subsets (and any DrugBank/HSDB-style annotations) must be excluded or separately licensed before commercial redistribution.",
+  "prov:wasDerivedFrom": [
+    {
+      "@type": "dcat:Dataset",
+      "@id": "https://pubchem.ncbi.nlm.nih.gov/",
+      "dcterms:title": "PubChem (NCBI) compound, bioassay, and annotation data",
+      "dcterms:license": {
+        "@id": "https://www.ncbi.nlm.nih.gov/home/about/policies/",
+        "dcterms:title": "No single license; depositor-mixed (see NCBI policies)"
+      },
+      "dcterms:publisher": "NCBI / U.S. National Library of Medicine",
+      "dcat:downloadURL": "ftp://ftp.ncbi.nlm.nih.gov/pubchem/",
+      "dcat:landingPage": "https://pubchem.ncbi.nlm.nih.gov/docs/downloads"
+    }
+  ],
+  "prov:wasGeneratedBy": {
+    "@type": "prov:Activity",
+    "prov:wasAssociatedWith": "BioBricks licensing-provenance annotation agent (Claude, slice items[1332:1338])",
+    "prov:endedAtTime": {
+      "@type": "xsd:dateTime",
+      "@value": "2026-08-05T00:00:00Z"
+    }
+  }
+}
